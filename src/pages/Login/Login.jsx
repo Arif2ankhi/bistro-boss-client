@@ -19,6 +19,7 @@ const Login = () => {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
+  console.log('state in the location login page', location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -121,20 +122,16 @@ const Login = () => {
                   name="captcha"
                   placeholder="type the captcha above"
                   className="input input-bordered"
-                  required
+                
                 />
-                {/* <button
-                // M    oved to input  line 112 
-                //   onClick={handleValidateCaptcha}
-                  className="btn btn-outline btn-xs mt-2"
-                >
-                  Validate
-                </button> */}
+               
               </div>
               <div className="form-control mt-6">
-                {/* <button >Login</button> */}
+                {/* TODO:apply disabled for re captcha */}
+                
                 <input
-                  disabled={disabled}
+                //   disabled={disabled}
+                  disabled={false}
                   className="btn btn-primary"
                   type="submit"
                   value="Login"
