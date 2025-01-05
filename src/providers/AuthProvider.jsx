@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile,  } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile,  } from "firebase/auth";
 import { app } from "../firebase/firebase.config";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 // need to export AuthContext
 export const AuthContext = createContext(null);
@@ -10,6 +11,8 @@ const AuthProvider = ({children}) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const googleProvider = new GoogleAuthProvider();
+    const axiosPublic = useAxiosPublic();
 
 
     const createUser = (email, password) =>{
@@ -21,6 +24,11 @@ const AuthProvider = ({children}) => {
     const signIn = (email, password) => {
         setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
+    }
+
+    const googleSignIn = () =>{
+        setLoading(true);
+        return signInWithPopup(auth, googleProvider);
     }
 
     const logOut =() => {
@@ -41,7 +49,29 @@ const AuthProvider = ({children}) => {
     useEffect(() =>  {
        const unsubscribe = onAuthStateChanged(auth, currentUser =>{
             setUser(currentUser);
-            console.log('current user', currentUser);
+            // console.log('current user', currentUser);
+             
+
+            
+
+            if(currentUser){
+                // got token and store client
+                const userInfo = {email: currentUser.email}
+                axiosPublic.post('/jwt', userInfo)
+                .then(res =>{
+                   if(res.data.token){
+                    localStorage.setItem('access-token', res.data.token)
+
+                   }
+                    
+                })
+            }
+            else{
+                // TODO: remove token from local storage
+                localStorage.removeItem('access-token')
+            }
+
+
             setLoading(false);
 
         });
@@ -49,7 +79,7 @@ const AuthProvider = ({children}) => {
             return unsubscribe();
         }
 
-    }, [])
+    }, [axiosPublic])
     
 const authInfo= {
     user,
@@ -57,7 +87,8 @@ const authInfo= {
     createUser,
     signIn,
     logOut,
-    updateUserProfile
+    updateUserProfile,
+    googleSignIn 
 
 
 }
