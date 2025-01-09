@@ -15,7 +15,7 @@ const Testimonials = () => {
 
   useEffect(() => {
     // Fetch reviews from an API
-    fetch('http://localhost:5000/reviews')
+    fetch('https://bistro-boss-server-zeta-bice.vercel.app/reviews')
       .then((res) => res.json())
       .then((data) => setReviews(data));
     //    .catch(error => console.error('Error:', error));
