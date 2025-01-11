@@ -18,7 +18,7 @@ const Testimonials = () => {
     fetch('https://bistro-boss-server-zeta-bice.vercel.app/reviews')
       .then((res) => res.json())
       .then((data) => setReviews(data));
-    //    .catch(error => console.error('Error:', error));
+      //  .catch(error => console.error('Error', error));
   }, []);
 
   return (
